@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../base
+
+configMapGenerator:
+  - name: ingress-nginx-private-values
+    namespace: ingress-nginx-private
+    files:
+      - values.yaml=ingress-nginx-private-values.yaml
+  - name: ingress-nginx-public-values
+    namespace: ingress-nginx-public
+    files:
+      - values.yaml=ingress-nginx-public-values.yaml
+
+secretGenerator:
+  - name: ingress-nginx-secrets
+    namespace: ingress-nginx-private
+    files:
+      - values.yaml=ingress-nginx-secrets.yaml
+  - name: ingress-nginx-secrets
+    namespace: ingress-nginx-public
+    files:
+      - values.yaml=ingress-nginx-secrets.yaml
+
+configurations:
+  - kustomizeconfig.yaml

@@ -1,0 +1,19 @@
+tolerations:
+  - effect: "NoSchedule"
+    operator: "Exists"
+
+config:
+  clients:
+    - url: http://loki-gateway/loki/api/v1/push
+  snippets:
+    extraRelabelConfigs:
+      - source_labels:
+          - __meta_kubernetes_pod_label_environment
+        regex: ^;*([^;]+)(;.*)?$
+        action: replace
+        target_label: environment
+      - source_labels:
+          - __meta_kubernetes_pod_label_app_kubernetes_io_part_of
+        regex: ^;*([^;]+)(;.*)?$
+        action: replace
+        target_label: application

@@ -1,0 +1,19 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: slack-alert-karpenter
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: error
+  exclusionList:
+    - ".*Dependencies do not meet ready condition.*"
+  eventSources:
+    - kind: Kustomization
+      name: '*'
+      namespace: karpenter
+    - kind: HelmRelease
+      name: '*'
+      namespace: karpenter

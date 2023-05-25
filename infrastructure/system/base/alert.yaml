@@ -1,0 +1,19 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: slack-alert-kube-system
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: error
+  exclusionList:
+    - ".*Dependencies do not meet ready condition.*"
+  eventSources:
+    - kind: HelmRelease
+      name: '*'
+      namespace: kube-system
+    - kind: Kustomization
+      name: '*'
+      namespace: kube-system

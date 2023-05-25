@@ -1,0 +1,21 @@
+replicas: 2
+
+settings:
+  aws:
+    clusterName: prod
+    defaultInstanceProfile: Karpenter-prod-PLACEHOLDER
+    interruptionQueueName: Karpenter-prod
+  featureGates:
+    driftEnabled: false
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/KarpenterIRSA-prod-PLACEHOLDER
+
+nodeSelector:
+  kube/nodetype: karpenter
+tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: karpenter

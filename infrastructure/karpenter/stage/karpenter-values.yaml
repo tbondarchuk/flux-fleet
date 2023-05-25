@@ -1,0 +1,21 @@
+replicas: 1
+
+settings:
+  aws:
+    clusterName: stage
+    defaultInstanceProfile: Karpenter-stage-PLACEHOLDER
+    interruptionQueueName: Karpenter-stage
+  featureGates:
+    driftEnabled: false
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/KarpenterIRSA-stage-PLACEHOLDER
+
+nodeSelector:
+  kube/nodetype: karpenter
+tolerations:
+  - effect: NoSchedule
+    key: dedicated
+    operator: Equal
+    value: karpenter

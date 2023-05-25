@@ -1,0 +1,49 @@
+installCRDs: true
+featureGates: "ServerSideApply=true"
+replicaCount: 2
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/instance
+          operator: In
+          values:
+          - cert-manager
+        - key: app.kubernetes.io/component
+          operator: In
+          values:
+          - controller
+      topologyKey: "kubernetes.io/hostname"
+cainjector:
+  replicaCount: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - cert-manager
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - cainjector
+        topologyKey: "kubernetes.io/hostname"
+webhook:
+  replicaCount: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - cert-manager
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - webhook
+        topologyKey: "kubernetes.io/hostname"

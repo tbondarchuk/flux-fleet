@@ -1,0 +1,21 @@
+controller:
+  region: PLACEHOLDER
+  k8sTagClusterId: prod
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/PLACEHOLDER
+node:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+
+storageClasses:
+  - name: ebs
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+    volumeBindingMode: WaitForFirstConsumer
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      encrypted: "true"

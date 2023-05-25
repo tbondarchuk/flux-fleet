@@ -1,0 +1,21 @@
+adminUser:
+  create: true
+  username: admin
+  passwordHash: PLACEHOLDER
+
+ingress:
+  enabled: true
+  annotations:
+    dns.alpha.kubernetes.io/external: "true"
+    cert-manager.io/cluster-issuer: self-signed
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  className: nginx-private
+  hosts:
+    - host: flux.prod.PLACEHOLDER
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+   - secretName: tls-gitops
+     hosts:
+       - flux.prod.PLACEHOLDER

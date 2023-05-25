@@ -1,0 +1,11 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Provider
+metadata:
+  name: slack
+spec:
+  type: slack
+  channel: notify
+  username: Flux-STAGE
+  secretRef:
+    name: slack-url

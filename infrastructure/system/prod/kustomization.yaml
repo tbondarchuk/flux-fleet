@@ -1,0 +1,91 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../base
+
+configMapGenerator:
+  - name: aws-ebs-csi-driver-values
+    namespace: kube-system
+    files:
+      - values.yaml=aws-ebs-csi-driver-values.yaml
+
+  - name: aws-load-balancer-controller-values
+    namespace: kube-system
+    files:
+      - values.yaml=aws-load-balancer-controller-values.yaml
+
+  - name: aws-vpc-cni-values
+    namespace: kube-system
+    files:
+      - values.yaml=aws-vpc-cni-values.yaml
+
+  - name: cert-manager-values
+    namespace: kube-system
+    files:
+      - values.yaml=cert-manager-values.yaml
+
+  - name: external-dns-values
+    namespace: kube-system
+    files:
+      - values.yaml=external-dns-values.yaml
+
+configurations:
+  - kustomizeconfig.yaml
+
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 2.18.0
+  target:
+    kind: HelmRelease
+    name: aws-ebs-csi-driver
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 1.5.2
+  target:
+    kind: HelmRelease
+    name: aws-load-balancer-controller
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 1.2.8
+  target:
+    kind: HelmRelease
+    name: aws-vpc-cni
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: v1.11.2
+  target:
+    kind: HelmRelease
+    name: cert-manager
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 1.12.2
+  target:
+    kind: HelmRelease
+    name: external-dns
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 3.10.0
+  target:
+    kind: HelmRelease
+    name: metrics-server
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: v1.0.24
+  target:
+    kind: HelmRelease
+    name: reloader

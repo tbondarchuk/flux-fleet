@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - source-ingress-nginx.yaml
+  - hr-ingress-nginx-private.yaml
+  - hr-ingress-nginx-public.yaml
+  - alert.yaml

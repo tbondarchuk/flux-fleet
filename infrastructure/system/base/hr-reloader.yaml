@@ -1,0 +1,25 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: reloader
+  namespace: kube-system
+spec:
+  releaseName: reloader
+  chart:
+    spec:
+      chart: reloader
+      version: 'v1.0.24'
+      sourceRef:
+        kind: HelmRepository
+        name: stakater
+        namespace: flux-system
+  interval: 15m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+
+  values:
+    reloader:
+      ignoreNamespaces: "kube-system"
+      readOnlyRootFileSystem: true

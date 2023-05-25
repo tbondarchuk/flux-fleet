@@ -1,0 +1,37 @@
+nameOverride: aws-node
+
+init:
+  image:
+    region: PLACEHOLDER
+
+image:
+  region: PLACEHOLDER
+
+env:
+  AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG: "true"
+  ENABLE_PREFIX_DELEGATION: "true"
+  WARM_ENI_TARGET: "1"
+  WARM_PREFIX_TARGET: "1"
+  ENI_CONFIG_LABEL_DEF: "topology.kubernetes.io/zone"
+
+originalMatchLabels: true
+
+crd:
+  create: true
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/PLACEHOLDER
+
+eniConfig:
+  create: true
+  region: PLACEHOLDER
+  subnets:
+    PLACEHOLDERa:
+      id: PLACEHOLDER
+      securityGroups:
+      - PLACEHOLDER
+    PLACEHOLDERb:
+      id: PLACEHOLDER
+      securityGroups:
+      - PLACEHOLDER

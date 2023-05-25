@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: flux-system
+
+resources:
+- cert-issuer.yaml
+- flux-webhook.yaml
+- ingress.yaml
+- karpenter-provisioner.yaml
+- karpenter.yaml
+- kubernetes-dashboard.yaml
+- monitoring.yaml
+- monitoring-extra.yaml
+- system.yaml
+- weave-gitops.yaml

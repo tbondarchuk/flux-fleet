@@ -1,0 +1,84 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../base
+
+# components:
+#   - ../base/yace
+
+configMapGenerator:
+  - name: grafana-values
+    namespace: monitoring
+    files:
+      - values.yaml=grafana-values.yaml
+  - name: kube-prometheus-stack-values
+    namespace: monitoring
+    files:
+      - values.yaml=kube-prometheus-stack-values.yaml
+  - name: loki-values
+    namespace: monitoring
+    files:
+      - values.yaml=loki-values.yaml
+  - name: promtail-values
+    namespace: monitoring
+    files:
+      - values.yaml=promtail-values.yaml
+  # - name: yace-values
+  #   namespace: monitoring
+  #   files:
+  #     - values.yaml=yace-values.yaml
+
+secretGenerator:
+  - name: grafana-secrets
+    namespace: monitoring
+    files:
+      - values.yaml=grafana-secrets.yaml
+  - name: kube-prometheus-stack-secrets
+    namespace: monitoring
+    files:
+      - values.yaml=kube-prometheus-stack-secrets.yaml
+
+configurations:
+  - kustomizeconfig.yaml
+
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 6.56.2
+  target:
+    kind: HelmRelease
+    name: grafana
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 45.27.2
+  target:
+    kind: HelmRelease
+    name: kube-prometheus-stack
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 5.5.1
+  target:
+    kind: HelmRelease
+    name: loki
+
+- patch: |-
+    - op: replace
+      path: /spec/chart/spec/version
+      value: 6.11.2
+  target:
+    kind: HelmRelease
+    name: promtail
+
+# - patch: |-
+#     - op: replace
+#       path: /spec/chart/spec/version
+#       value: 0.20.0
+#   target:
+#     kind: HelmRelease
+#     name: yace

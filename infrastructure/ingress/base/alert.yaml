@@ -1,0 +1,25 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: slack-alert-ingress
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: error
+  exclusionList:
+    - ".*Dependencies do not meet ready condition.*"
+  eventSources:
+    - kind: Kustomization
+      name: '*'
+      namespace: ingress-nginx-private
+    - kind: HelmRelease
+      name: '*'
+      namespace: ingress-nginx-private
+    - kind: Kustomization
+      name: '*'
+      namespace: ingress-nginx-public
+    - kind: HelmRelease
+      name: '*'
+      namespace: ingress-nginx-public

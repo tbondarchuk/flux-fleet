@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - service-monitor-private.yaml
+  - service-monitor-public.yaml
+  - prometheus-rule-private.yaml
+  - prometheus-rule-public.yaml
+
+configMapGenerator:
+- files:
+  - nginx-controller.json
+  - nginx-logs.json
+  - nginx-analytics.json
+  - request-handling-performance.json
+
+  name: grafana-dashboards-nginx
+  options:
+    disableNameSuffixHash: true
+    annotations:
+      grafana-sidecar-target-folder: Nginx Ingress
+    labels:
+      grafana_dashboard: 'true'

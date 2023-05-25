@@ -1,0 +1,80 @@
+grafana.ini:
+  server:
+    root_url: https://grafana.prod.PLACEHOLDER
+  users:
+    viewers_can_edit: true
+
+ingress:
+  enabled: true
+  annotations:
+    dns.alpha.kubernetes.io/external: "true"
+    cert-manager.io/cluster-issuer: self-signed
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  labels:
+    ingress-class: nginx-private
+  ingressClassName: nginx-private
+  hosts:
+    - grafana.prod.PLACEHOLDER
+  tls:
+   - secretName: tls-grafana
+     hosts:
+       - grafana.prod.PLACEHOLDER
+
+sidecar:
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+    labelValue: ''
+    folderAnnotation: grafana-sidecar-target-folder
+    logLevel: INFO
+    provider:
+      allowUiUpdates: true
+      foldersFromFilesStructure: true
+
+plugins:
+  - grafana-piechart-panel
+
+datasources:
+ datasources.yaml:
+   apiVersion: 1
+   datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://kube-prometheus-stack-prometheus:9090
+      access: proxy
+      uid: prometheus
+      isDefault: true
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway
+      uid: loki
+      jsonData:
+        timeout: 60
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    kubernetes:
+      gnetId: 15479
+      revision: 2
+      datasource: prometheus
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+imageRenderer:
+  enabled: false

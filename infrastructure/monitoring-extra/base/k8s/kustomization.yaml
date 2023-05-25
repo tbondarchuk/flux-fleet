@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+- files:
+  - k8s-system-api-server.json
+  - k8s-system-coredns.json
+  - k8s-views-global.json
+  - k8s-views-namespaces.json
+  - k8s-views-nodes.json
+  - k8s-views-pods.json
+  - k8s-logs.json
+  - kubernetes-capacity.json
+  - kubernetes-capacity-2.json
+
+  name: grafana-dashboards-k8s
+  options:
+    disableNameSuffixHash: true
+    annotations:
+      grafana-sidecar-target-folder: K8S
+    labels:
+      grafana_dashboard: 'true'

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - hr-aws-ebs-csi-driver.yaml
+  - hr-aws-load-balancer-controller.yaml
+  - hr-aws-vpc-cni.yaml
+  - hr-cert-manager.yaml
+  - hr-external-dns.yaml
+  - hr-metrics-server.yaml
+  - hr-reloader.yaml
+  - namespace.yaml
+  - source-aws-ebs-csi-driver.yaml
+  - source-eks.yaml
+  - source-external-dns.yaml
+  - source-jetstack.yaml
+  - source-metrics-server.yaml
+  - source-stakater.yaml
+  - alert.yaml

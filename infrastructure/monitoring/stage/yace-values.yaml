@@ -1,0 +1,56 @@
+replicaCount: 1
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/PLACEHOLDER
+
+
+serviceMonitor:
+  enabled: true
+  metricRelabelings:
+    - action: labeldrop
+      regex: "instance|endpoint|pod|container|namespace|service|account_id"
+
+config: |-
+  apiVersion: v1alpha1
+  sts-region: PLACEHOLDER
+  discovery:
+    exportedTagsOnMetrics:
+      sqs:
+        - Name
+    jobs:
+    - regions:
+      - PLACEHOLDER
+      type: sqs
+      period: 600
+      length: 3600
+      metrics:
+        - name: ApproximateAgeOfOldestMessage
+          statistics:
+          - Maximum
+        - name: ApproximateNumberOfMessagesDelayed
+          statistics:
+          - Average
+        - name: ApproximateNumberOfMessagesNotVisible
+          statistics:
+          - Average
+        - name: ApproximateNumberOfMessagesVisible
+          statistics:
+          - Average
+        - name: NumberOfEmptyReceives
+          statistics:
+          - Sum
+        - name: NumberOfMessagesDeleted
+          statistics:
+          - Sum
+        - name: NumberOfMessagesReceived
+          statistics:
+          - Sum
+        - name: NumberOfMessagesSent
+          statistics:
+          - Sum
+        - name: SentMessageSize
+          statistics:
+          - Average
+          - Sum

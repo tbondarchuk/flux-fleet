@@ -1,0 +1,7 @@
+---
+# Kustomization's component in order to keep custom name label for cronjob
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - hr-yace.yaml
+  - source-yace.yaml

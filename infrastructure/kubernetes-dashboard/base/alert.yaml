@@ -1,0 +1,19 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta2
+kind: Alert
+metadata:
+  name: slack-alert-kubernetes-dashboard
+  namespace: flux-system
+spec:
+  providerRef:
+    name: slack
+  eventSeverity: error
+  exclusionList:
+    - ".*Dependencies do not meet ready condition.*"
+  eventSources:
+    - kind: Kustomization
+      name: '*'
+      namespace: kubernetes-dashboard
+    - kind: HelmRelease
+      name: '*'
+      namespace: kubernetes-dashboard

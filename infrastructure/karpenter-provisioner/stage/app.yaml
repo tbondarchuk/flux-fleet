@@ -1,0 +1,35 @@
+---
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: app
+spec:
+  requirements:
+    - key: kubernetes.io/arch
+      operator: In
+      values: [amd64]
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: [on-demand, spot]
+    - key: karpenter.k8s.aws/instance-family
+      operator: In
+      values: [t3]
+    - key: karpenter.k8s.aws/instance-size
+      operator: NotIn
+      values: [nano, micro, small]
+  labels:
+    kube/nodetype: app
+  taints:
+    - key: dedicated
+      value: app
+      effect: NoSchedule
+  limits:
+    resources:
+      cpu: "100"
+      memory: 100Gi
+  providerRef:
+    name: default
+  consolidation:
+    enabled: true
+  kubeletConfiguration:
+    maxPods: 110

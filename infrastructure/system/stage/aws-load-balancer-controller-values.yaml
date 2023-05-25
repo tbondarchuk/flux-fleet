@@ -1,0 +1,20 @@
+replicaCount: 2
+
+clusterName: stage
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/PLACEHOLDER
+
+resources:
+  limits:
+    cpu: 50m
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 128Mi
+
+ingressClass: alb
+
+enableCertManager: true

@@ -1,0 +1,23 @@
+ingress:
+  enabled: true
+  annotations:
+    dns.alpha.kubernetes.io/external: "true"
+    cert-manager.io/cluster-issuer: self-signed
+  className: nginx-private
+  hosts:
+    - k8s-dashboard.prod.PLACEHOLDER
+  tls:
+    - secretName: kubernetes-dashboard-tls
+      hosts:
+        - k8s-dashboard.prod.PLACEHOLDER
+  customPaths:
+    - path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: kubernetes-dashboard
+          port:
+            number: 443
+
+metricsScraper:
+  enabled: true

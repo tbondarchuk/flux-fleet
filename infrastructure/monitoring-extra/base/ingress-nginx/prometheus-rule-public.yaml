@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ingress-nginx-public-controller
+spec:
+  groups:
+  - name: ingress-nginx-public
+    rules:
+    - alert: NGINXConfigFailed
+      annotations:
+        description: bad ingress config - nginx config test failed
+        summary: uninstall the latest ingress changes to allow config reloads to resume
+      expr: count(nginx_ingress_controller_config_last_reload_successful{controller_namespace="ingress-nginx-public"} == 0) > 0
+      for: 1s
+      labels:
+        severity: critical

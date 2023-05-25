@@ -1,0 +1,13 @@
+provider: aws
+policy: sync
+registry: txt
+txtSuffix: -extdns
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::PLACEHOLDER:role/PLACEHOLDER
+
+sources:
+  - service
+  - ingress
+  - istio-gateway

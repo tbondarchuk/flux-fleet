@@ -1,0 +1,25 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: yace
+  namespace: monitoring
+spec:
+  releaseName: yet-another-cloudwatch-exporter
+  chart:
+    spec:
+      chart: yet-another-cloudwatch-exporter
+      version: '0.20.0'
+      sourceRef:
+        kind: HelmRepository
+        name: yace
+        namespace: flux-system
+  interval: 15m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  valuesFrom:
+    - kind: ConfigMap
+      name: yace-values
+  dependsOn:
+    - name: kube-prometheus-stack

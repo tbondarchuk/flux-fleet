@@ -1,0 +1,122 @@
+cleanPrometheusOperatorObjectNames: true
+
+grafana:
+  enabled: false
+
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: [alertname]
+      receiver: 'slack'
+      routes:
+        - matchers:
+            - alertname =~ "Watchdog|InfoInhibitor|KubeCPUOvercommit|KubeMemoryOvercommit|KubeletTooManyPods"
+          receiver: 'null'
+    receivers:
+      - name: 'null'
+      - name: 'slack'
+        slack_configs:
+          - channel: '#notify'
+            username: Alertmanager-PROD
+            send_resolved: true
+            icon_url: https://avatars3.githubusercontent.com/u/3380462
+            title: |-
+              [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ range .Alerts }}{{ .Annotations.summary }} {{ end }}
+            text: >-
+              {{ range .Alerts -}}
+              *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+              *Description:* {{ .Annotations.description }}
+
+              *Details:*
+                {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+                {{ end }}
+              {{ end }}
+  alertmanagerSpec:
+    storage:
+      emptyDir:
+        medium: Memory
+  ingress:
+    enabled: true
+    ingressClassName: nginx-private
+    annotations:
+      dns.alpha.kubernetes.io/external: 'true'
+      cert-manager.io/cluster-issuer: self-signed
+      nginx.ingress.kubernetes.io/service-upstream: 'true'
+    hosts:
+      - alertmanager.prod.PLACEHOLDER
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+      - secretName: alertmanager-general-tls
+        hosts:
+          - alertmanager.prod.PLACEHOLDER
+
+prometheus:
+  prometheusSpec:
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeInterval: 10s
+    scrapeTimeout: 10s
+    evaluationInterval: 10s
+    containers:
+    - name: prometheus
+      startupProbe:
+        failureThreshold: 1000
+      readinessProbe:
+        failureThreshold: 1000
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+      limits:
+        memory: 3.5Gi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ebs
+          resources:
+            requests:
+              storage: 50Gi
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx-private
+    annotations:
+      dns.alpha.kubernetes.io/external: 'true'
+      cert-manager.io/cluster-issuer: self-signed
+      nginx.ingress.kubernetes.io/service-upstream: 'true'
+    hosts:
+      - prometheus.prod.PLACEHOLDER
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+      - secretName: prometheus-general-tls
+        hosts:
+          - prometheus.prod.PLACEHOLDER
+
+prometheusOperator:
+  admissionWebhooks:
+    patch:
+      podAnnotations:
+        linkerd.io/inject: disabled
+
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 30Mi
+
+### Disable as those are not accessile on EKS
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeApiServer:
+  enabled: false

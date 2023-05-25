@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - service-monitor.yaml
+
+configMapGenerator:
+- files:
+  - karpenter-capacity-dashboard.json
+  - karpenter-performance-dashboard.json
+
+  name: grafana-dashboards-karpenter
+  options:
+    disableNameSuffixHash: true
+    annotations:
+      grafana-sidecar-target-folder: karpenter
+    labels:
+      grafana_dashboard: 'true'

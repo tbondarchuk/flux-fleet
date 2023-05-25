@@ -1,0 +1,36 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aws-sqs
+spec:
+  groups:
+  - name: AwsSQS
+    rules:
+    - alert: AwsSQSDeadletterSent
+      annotations:
+        title: 'Message was sent to SQS deadletter'
+        summary: 'Queue {{ $labels.dimension_QueueName }} has received {{ $value }} messages'
+        description: 'Queue {{ $labels.dimension_QueueName }} has received {{ $value }} messages in last ten minutes.'
+      expr: aws_sqs_number_of_messages_sent_sum{dimension_QueueName=~".+-deadletter.fifo"} > 0
+      for: 10m
+      labels:
+        severity: critical
+    - alert: AwsSQSHighNumberOfMessages
+      annotations:
+        title: 'High number of SQS messages'
+        summary: 'Queue {{ $labels.dimension_QueueName }} has {{ $value }} messages'
+        description: 'Queue {{ $labels.dimension_QueueName }} has {{ $value }} messages in last ten minutes.'
+      expr: (aws_sqs_approximate_number_of_messages_delayed_average  + aws_sqs_approximate_number_of_messages_not_visible_average + aws_sqs_approximate_number_of_messages_visible_average) > 100
+      for: 10m
+      labels:
+        severity: warning
+    - alert: AwsSQSOldMessage
+      annotations:
+        title: 'SQS queue has Message older then 10 min'
+        summary: 'Queue {{ $labels.dimension_QueueName }} has message older then 10 min'
+        description: 'Queue {{ $labels.dimension_QueueName }} has message older then 10 min.'
+      expr: aws_sqs_approximate_age_of_oldest_message_maximum > 600
+      for: 10m
+      labels:
+        severity: warning
